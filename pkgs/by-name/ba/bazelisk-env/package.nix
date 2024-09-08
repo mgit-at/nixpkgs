@@ -8,9 +8,10 @@ buildFHSUserEnv {
   extraOutputsToInstall = ["include" "dev"]; # TODO: make it saner?
 
   targetPkgs = pkgs: with pkgs; [
+    coreutils-full
     zlib
     gcc
-#    gcc-unwrapped.lib
+    gcc-unwrapped.lib
     pkg-config
     python3
     coreutils-full
@@ -23,10 +24,10 @@ buildFHSUserEnv {
     export BAZELISK_ENV=1
     export CC=$(which gcc)
     CMD=bazelisk
-    if [ -v ENV_SHELL ]; then
+    if [ -v USE_SHELL ]; then
       CMD="$SHELL"
     fi
-    export PATH="${coreutils-full}/bin:$PATH"
+    # export PATH="${coreutils-full}/bin:$PATH"
   '';
 
   # runScript = ''$SHELL'';
