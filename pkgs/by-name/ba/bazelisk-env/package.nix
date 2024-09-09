@@ -8,23 +8,29 @@
 buildFHSUserEnv {
   name = "bazelisk-env";
   extraOutputsToInstall = ["include" "dev"]; # TODO: make it saner?
+
   # this is necesarry to make sure we don't inherit things from nixos that we don't want to inherit
-  # like non-FHS bash interactive in /run/current-system/sw/bin
-  # extraBwrapArgs = [ "--tmpfs" "/run" ];  #[ "--tmpfs" "/run/current-system/sw/bin" ];
+  # like non-FHS bash interactive from /run/current-system/sw/bin
   extraBwrapArgs = [
+    # for debugging
     "--ro-bind" "/run" "/.host-run"
+
     "--tmpfs" "/run"
+    # dns
     "--ro-bind" "/run/systemd" "/run/systemd"
+    # several things, including dns
     "--ro-bind" "/run/nscd" "/run/nscd"
   ];
+
+  # for go build
+  multiArch = true;
 
   # NOTE: since /run/current-system is inaccessible
   # EVERY required tool must be specified here
   targetPkgs = pkgs: with pkgs; [
-    coreutils-full
-    zlib
+    gcc_multi
 #    gcc
-    gcc-unwrapped
+#    gcc-unwrapped
     binutils
     gcc-unwrapped.lib
     pkg-config
@@ -41,7 +47,10 @@ buildFHSUserEnv {
     host
   ];
 
+  # everything that we need both 64bit and 32bit versions of
   multiPkgs = pkgs: with pkgs; [
+    coreutils-full
+    zlib
   ];
 
   profile = ''
