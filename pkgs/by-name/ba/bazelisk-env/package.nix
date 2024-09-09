@@ -28,11 +28,12 @@ buildFHSUserEnv {
   # NOTE: since /run/current-system is inaccessible
   # EVERY required tool must be specified here
   targetPkgs = pkgs: with pkgs; [
-    gcc_multi
+    gcc_multi.out
+#    gcc_multi
 #    gcc
 #    gcc-unwrapped
     binutils
-    gcc-unwrapped.lib
+#    gcc-unwrapped.lib
     pkg-config
     python3
     coreutils-full
