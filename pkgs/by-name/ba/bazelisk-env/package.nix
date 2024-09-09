@@ -1,8 +1,5 @@
 {
   buildFHSUserEnv,
-  coreutils-full,
-  lib,
-  bashInteractiveFHS,
 }:
 
 buildFHSUserEnv {
@@ -28,42 +25,36 @@ buildFHSUserEnv {
   # NOTE: since /run/current-system is inaccessible
   # EVERY required tool must be specified here
   targetPkgs = pkgs: with pkgs; [
+    # include no more than this
+    # crt1.o is already taken care of by buildFHSEnv.nix
     gcc_multi.out
-#    gcc_multi
-#    gcc
-#    gcc-unwrapped
     binutils
-#    gcc-unwrapped.lib
     pkg-config
     python3
-    coreutils-full
+    coreutils-full # is not multi since takes forever to build and no cache available
     bazelisk
     git
     which
     python3
     patch
-    # (lib.hiPrio bashInteractiveFHS)
-    # debug
     iputils
     host
   ];
 
   # everything that we need both 64bit and 32bit versions of
   multiPkgs = pkgs: with pkgs; [
-    coreutils-full
     zlib
   ];
 
   profile = ''
     export BAZELISK_ENV=1
     export CC=$(which gcc)
+
     CMD=bazelisk
+
     if [ -v USE_SHELL ]; then
       CMD="/usr/bin/bash"
     fi
-    # export PATH="${coreutils-full}/bin:$PATH"
-    # this makes sure bash and sh resolve to bashInteractiveFHS
-    export PATH="/usr/bin:$PATH"
   '';
 
   # runScript = ''$SHELL'';
